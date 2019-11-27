@@ -5,10 +5,11 @@ import model_main_2 as train
 import tensorflow as tf
 from absl import flags
 import os
-
+import time
 
 
 def main():
+    TrainingsStepsBeforeCheck = 4000
     print("initialse autotraining...")
     subdirectory = "trainingdata"
     folders_in_subdirectory_old = []
@@ -24,9 +25,17 @@ def main():
                 configpath = glob.glob(os.path.join(folder, "*.config"))[0]
                 flags.FLAGS.pipeline_config_path = configpath
                 flags.FLAGS.model_dir = "training"
+                flags.FLAGS.num_train_steps = TrainingsStepsBeforeCheck
                 print(folder)
                 print(flags.FLAGS.model_dir)
-                runTrainJob()
+
+                initialTime = int(time.time)
+                while True:
+                    runTrainJob()
+                    elapsedTime = time.time - initialTime
+                    if(elapsedTime > 6*60*60)
+                        break
+                        
             except OSError as e:
                 print(e)
             except IOError:
