@@ -1,7 +1,7 @@
 import glob
 from time import sleep
 
-import model_main_2 as train
+import model_main as train
 import tensorflow as tf
 from absl import flags
 import os
@@ -9,7 +9,7 @@ import time
 
 
 def main():
-    TrainingsStepsBeforeCheck = 4000
+    TrainingsStepsBeforeCheck = 18000
     print("initialse autotraining...")
     subdirectory = "trainingdata"
     folders_in_subdirectory_old = []
@@ -29,12 +29,13 @@ def main():
                 print(folder)
                 print(flags.FLAGS.model_dir)
 
-                initialTime = int(time.time)
+                initialTime = int(time.time())
                 while True:
                     runTrainJob()
-                    elapsedTime = time.time - initialTime
-                    if(elapsedTime > 6*60*60)
-                        break
+		    flags.FLAGS.num_train_steps += 18000
+		    elapsedTime = time.time() - initialTime
+                    if(elapsedTime > 60 * 60 * 6):
+                    	break
                         
             except OSError as e:
                 print(e)
@@ -42,6 +43,7 @@ def main():
                 print("Error occurred with %s. Try next config.." % folder)
 
         sleep(2)
+	print("Waiting for new folder...")
 
 
 def getFoldersInSubdirecory(path):
@@ -53,7 +55,10 @@ def getFoldersInSubdirecory(path):
 
 # @asyncio.coroutine
 def runTrainJob():
-    tf.app.run(train.main)
+    try:
+    	tf.app.run(train.main)
+    except SystemExit as e:
+	pass
 
 
 def makeNewList(list_new, list_old):
